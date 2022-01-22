@@ -42,4 +42,17 @@ class CitylistVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let city = cityList[indexPath.row]
+        performSegue(withIdentifier: "DetailsVC", sender: city)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? DetailsVC {
+            if let city = sender as? CityInfo {
+                destination.city = city
+            }
+        }
+    }
+    
 }
