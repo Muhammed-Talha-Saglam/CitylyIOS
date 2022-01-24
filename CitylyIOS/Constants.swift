@@ -12,4 +12,3 @@ let PATH_URBAN_AREAS = "urban_areas/"
 let PATH_URBAN_AREA_INFO = "urban_areas/slug:"
 
 typealias DownloadComplete = () -> ()
-

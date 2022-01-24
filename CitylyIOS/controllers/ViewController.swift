@@ -29,10 +29,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.delegate = self
         tableView.dataSource = self
         
-        UrbanAreaList().downLoadAllUrbanAreaName {
-            
-        }
-        
+        let urbanAreas = UrbanAreaList()
+        urbanAreas.downLoadAllUrbanAreaName {        }
     }
     
  
