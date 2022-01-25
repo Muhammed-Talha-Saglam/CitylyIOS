@@ -23,6 +23,8 @@ class UrbanAreaList {
             _urbanArealist = newValue
         }
     }
+    
+    static var lastIndex = 10
 
     func downLoadAllUrbanAreaName(completed: @escaping DownloadComplete) {
         let url = "\(BASE_URL)\(PATH_URBAN_AREAS)"

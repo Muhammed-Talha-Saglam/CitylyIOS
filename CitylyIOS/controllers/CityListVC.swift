@@ -7,44 +7,48 @@
 
 import UIKit
 
-class CitylistVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate  {
+class CitylistVC: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     
-    @IBOutlet var cityListcollectionView: UICollectionView!
+    @IBOutlet var cityListTableView: UITableView!
     
     var urbanAreaList = [UrbanAreaInfo]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        cityListcollectionView.delegate = self
-        cityListcollectionView.dataSource = self
+        cityListTableView.delegate = self
+        cityListTableView.dataSource = self
         
-        cityListcollectionView.register(CityListCollectionViewCell.nib(), forCellWithReuseIdentifier: CityListCollectionViewCell.identifier)
 
-        let urbanList = UrbanAreaList.urbanArealist.prefix(10)
+        let urbanList = UrbanAreaList.urbanArealist.prefix(UrbanAreaList.lastIndex-1)
         urbanList.forEach { urbanArea in
             let urbanAreaInfo = UrbanAreaInfo()
             urbanAreaInfo.href = urbanArea.href
             urbanAreaInfo.fullName = urbanArea.name
-            urbanAreaInfo.downLoadCityImg()
-            urbanAreaList.append(urbanAreaInfo)
+            urbanAreaInfo.downLoadSalaryInfo()
+            urbanAreaInfo.downLoadScoresInfo()
+            urbanAreaInfo.downLoadCityImg() {
+                DispatchQueue.main.async {
+                    self.urbanAreaList.append(urbanAreaInfo)
+                }
+            }
+            
         }
-        
     }
     
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         urbanAreaList.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CityListCollectionViewCell.identifier, for: indexPath) as! CityListCollectionViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CityListTableViewCell.identifier, for: indexPath) as! CityListTableViewCell
         
-        let urbanInfo = urbanAreaList[indexPath.row]
-        cell.configure(urbanInfo: urbanInfo)
-    
+        cell.configure(urbanInfo: urbanAreaList[indexPath.row])
+        
         return cell
     }
+
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? DetailsVC {
@@ -56,8 +60,23 @@ class CitylistVC: UIViewController, UICollectionViewDataSource, UICollectionView
     
     
     @IBAction func refresh(_ sender: UIBarButtonItem) {
-        cityListcollectionView.reloadData()
+        cityListTableView.reloadData()
 
+    }
+    @IBAction func btnMore(_ sender: UIButton) {
+        let lastIndex = UrbanAreaList.lastIndex
+        for i in lastIndex..<(lastIndex+10) {
+            let urbanArea =  UrbanAreaList.urbanArealist[i]
+            let urbanAreaInfo = UrbanAreaInfo()
+            urbanAreaInfo.href = urbanArea.href
+            urbanAreaInfo.fullName = urbanArea.name
+            urbanAreaInfo.downLoadCityImg() {
+                DispatchQueue.main.async {
+                    self.urbanAreaList.append(urbanAreaInfo)
+                }
+            }
+        }
+        UrbanAreaList.lastIndex = lastIndex + 10
     }
     
 }
